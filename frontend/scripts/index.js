@@ -78,7 +78,7 @@ function createPOI(e) {
       <div class="form-group">
         <label for="recommendations">Please enter recommendations</label>
         <input
-          type="text"
+          type="number"
           name="recommendations"
           class="form-control"
           id="recommendations"
@@ -110,9 +110,11 @@ function getByRegion(region) {
 
       markersLayer.clearLayers();
       let marker;
+      
 
       //Create result table
       for (let item of json) {
+        let review = item["review"]?item["review"]:"No review yet";
         tr = document.createElement("tr");
         td = document.createElement("td");
         td.innerHTML += item["name"];
@@ -139,6 +141,9 @@ function getByRegion(region) {
         td.innerHTML += item["recommendations"];
         tr.appendChild(td);
         td = document.createElement("td");
+        td.innerHTML += review;
+        tr.appendChild(td);
+        td = document.createElement("td");
         btn = document.createElement("button");
         btn.innerHTML = "Recommend";
         btn.addEventListener("click", function () {
@@ -155,8 +160,16 @@ function getByRegion(region) {
         tr.appendChild(td);
         resultsTable.appendChild(tr);
 
+        
         var popup = L.popup().setContent(
-          `<h3>${item["name"]}</h3><br><p>${item["description"]}</p>`
+          `<h3>${item["name"]}</h3><br>
+          <p>${item["description"]}</p>
+          <p>${review}</p>
+          <form method="post" onsubmit="submitReview(event, this, ${item["ID"]})">
+          <textarea name="review"></textarea><br>
+          <button type="submit" class="btn btn-primary">Add review</button>
+          </form>
+          `
         );
 
         marker = L.marker([item["lat"], item["lon"]]).bindPopup(popup, {
@@ -174,6 +187,26 @@ document.getElementById("regBtn").addEventListener("click", () => {
   getByRegion(region);
 });
 
+function submitReview(e, form, id) {
+  e.preventDefault();
+
+  fetch("http://localhost:3000/reviews/create", {
+    method: "post",
+    headers: { "Content-Type": "application/json" },
+    //credentials: 'include',
+    body: JSON.stringify({
+      review: form.review.value,
+      poiid: id
+    }),
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+    
+  })
+    .catch((error) => error);;
+}
+
 function submitForm(e, form) {
   e.preventDefault();
 
@@ -189,7 +222,7 @@ function submitForm(e, form) {
       lon: form.lon.value,
       lat: form.lat.value,
       description: form.description.value,
-      recommendations: form.recommendations.value,
+      recommendations: form.recommendations.value
     }),
   })
   .then((response) => response.json())

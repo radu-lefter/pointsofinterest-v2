@@ -5,6 +5,7 @@ const authMiddleware = require('./middleware/authMiddleware');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 const pointsRouter = require('./routes/points');
+const reviewsRouter = require('./routes/reviews');
 const authRouter = require('./routes/auth');
 
 const expressSession = require('express-session');
@@ -47,6 +48,7 @@ app.use('/auth', authRouter);
 app.use(authMiddleware);
 
 app.use('/points', pointsRouter);
+app.use('/reviews', reviewsRouter);
 
 // app.use(passport.initialize());
 // app.use(passport.session());

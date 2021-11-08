@@ -8,6 +8,7 @@ const pController = new pointsController(con);
 pointsRouter.get('/', pController.findAllPoints.bind(pController));
 pointsRouter.get('/:region', pController.findByRegion.bind(pController));
 pointsRouter.put('/recommend/:id', pController.recommend.bind(pController));
+pointsRouter.post('/create', pController.createPoint.bind(pController));
 
 // pointsRouter.get('/', (req, res) => {
 //     con.query(`SELECT * FROM pointsofinterest`,[],
@@ -47,25 +48,25 @@ pointsRouter.put('/recommend/:id', pController.recommend.bind(pController));
 // });
 
 
-pointsRouter.post('/create', (req, res) => {
-    con.query(`INSERT INTO pointsofinterest 
-    (name, type, country, region, lon, lat, description, recommendations) 
-    VALUES 
-    (?, ?, ?, ?, ?, ?, ?, ?)`, 
-    [
-      req.body.name, req.body.type,
-      req.body.country, req.body.region,
-      req.body.lon, req.body.lat,
-      req.body.description, req.body.recommendations
-    ],
-        (error,results,fields) => { 
-        if(error) {
-            res.status(500).json({ error: error });
-        } else {
-            res.json({"message":"Point created successfully"});
-        }
-    });
-});
+// pointsRouter.post('/create', (req, res) => {
+//     con.query(`INSERT INTO pointsofinterest 
+//     (name, type, country, region, lon, lat, description, recommendations) 
+//     VALUES 
+//     (?, ?, ?, ?, ?, ?, ?, ?)`, 
+//     [
+//       req.body.name, req.body.type,
+//       req.body.country, req.body.region,
+//       req.body.lon, req.body.lat,
+//       req.body.description, req.body.recommendations
+//     ],
+//         (error,results,fields) => { 
+//         if(error) {
+//             res.status(500).json({ error: error });
+//         } else {
+//             res.json({"message":"Point created successfully"});
+//         }
+//     });
+// });
 
 pointsRouter.put('/update/:id', (req, res) => {
     con.query(`UPDATE pointsofinterest 

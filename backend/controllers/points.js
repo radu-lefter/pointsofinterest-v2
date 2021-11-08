@@ -1,4 +1,3 @@
-const con = require("../db");
 const pointDao = require("../dao/point");
 
 
@@ -41,6 +40,20 @@ class pointsController {
 
       if (point == null) {
         res.status(404).json({ error: "Could not update recommendations" });
+      } else {
+        res.json(point);
+      }
+    } catch (e) {
+      res.status(500).json({ error: e });
+    }
+  }
+
+  async createPoint(req, res) {
+    try {
+      const point = await this.dao.createPoint(req.body);
+
+      if (point == null) {
+        res.status(404).json({ error: "Could not create new point of interest" });
       } else {
         res.json(point);
       }
