@@ -5,7 +5,7 @@ function submitForm(e, form) {
   fetch("http://localhost:3000/points/create", {
     method: "post",
     headers: { "Content-Type": "application/json" },
-    //credentials: "include",
+    credentials: "include",
     //credentials: "same-origin",
     body: JSON.stringify({
       name: form.name.value,

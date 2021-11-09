@@ -22,7 +22,7 @@ const app = express();
 
 app.use(expressSession({
     store: sessionStore, 
-    secret: 'BinnieAndClyde', 
+    secret: 'bigsecret', 
     resave: false, 
     saveUninitialized: false, 
     rolling: true, 
@@ -31,7 +31,6 @@ app.use(expressSession({
     cookie: { 
         maxAge: 600000, 
         httpOnly: true
-        //secure:false
     }
 }));
 
@@ -45,8 +44,10 @@ app.use(
     extended: true,
   })
 );
-let options = { origin: true, credentials: true };
-app.use(cors());
+let options = { origin: 'http://localhost:5500',
+methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
+credentials: true };
+app.use(cors(options));
 app.use(corsMiddleware);
 
 //**************Passport */
