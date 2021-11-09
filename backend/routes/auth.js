@@ -2,8 +2,7 @@ const express = require('express');
 const authRouter = express.Router();
 const con = require('../db');
 
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+
 
 authRouter.post('/login', (req, res) => {
     con.query(`SELECT * FROM poi_users WHERE username = ? AND password = ?`, 
@@ -18,7 +17,7 @@ authRouter.post('/login', (req, res) => {
             // req.session.save(()=>{
                 
             // });
-            return res.json({"message":`Logged in as ${req.body.username}`});
+            return res.json({"message":`Logged in as ${req.session.username}`});
             
             }else{
             res.json({"message":`Incorrect username or password`});
@@ -27,53 +26,11 @@ authRouter.post('/login', (req, res) => {
     });
 });
 
-
-// passport.use(new LocalStrategy(async(username, password, done)=> {
-   
-//     const userDao = new UserDao(db);
-//     try {
-       
-//         const userDetails = await userDao.login(username, password);
-
-      
-//         if(userDetails === null){
-//             return done(null, false);
-//         } else {
-            
-//             return done(null, userDetails);
-//         }
-//     } catch(e) {
-     
-//         return done(e);
-//     }
-// }));
-
-// app.post('/login',
-    
-//     passport.authenticate('local'), 
-
-    
-//     (req, res, next) => {
-        
-//         res.json(req.user); 
-//     }
-// );
-
-// passport.serializeUser((userDetails, done) => {
-//     done(null, userDetails.id);
-// });
-
-// passport.deserializeUser(async(userid, done) => {
-//     try {
-//         const userDao = new UserDao(db);
+authRouter.post('/logout', (req, res) => {
+    req.session = null;
+    res.json({'success': 1 });
+});
 
 
-//         const details = await userDao.findById(userid);
-
-//         done(null, details);
-//     } catch(e) {
-//         done(e);
-//     }
-// });
 
 module.exports = authRouter;

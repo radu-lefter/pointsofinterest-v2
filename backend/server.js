@@ -8,6 +8,11 @@ const pointsRouter = require('./routes/points');
 const reviewsRouter = require('./routes/reviews');
 const authRouter = require('./routes/auth');
 
+// const passport = require('passport');
+// const LocalStrategy = require('passport-local').Strategy;
+//const UserDao = require("./dao/user")
+
+var cookieParser = require('cookie-parser')
 const expressSession = require('express-session');
 const MySQLStore = require('express-mysql-session')(expressSession);
 const con = require('./db');
@@ -24,14 +29,15 @@ app.use(expressSession({
     unset: 'destroy', 
     proxy: true, 
     cookie: { 
-        maxAge: 600000, // 600000 ms = 10 mins expiry time
-        httpOnly: false, // allow client-side code to access the cookie, otherwise it's kept to the HTTP messages
-        secure: false,
-        sameSite: 'none'
+        maxAge: 600000, 
+        httpOnly: true
+        //secure:false
     }
 }));
 
-app.set('trust proxy', 1)
+app.use(cookieParser('BinnieAndClyde'))
+
+//app.set('trust proxy', 1)
 
 app.use(express.json());
 app.use(
@@ -39,9 +45,66 @@ app.use(
     extended: true,
   })
 );
-app.use(cors({ origin: true, credentials: true }));
+let options = { origin: true, credentials: true };
+app.use(cors());
 app.use(corsMiddleware);
 
+//**************Passport */
+
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// passport.serializeUser((user, done) => {
+//   done(null, user);
+// });
+
+// passport.deserializeUser(async(userid, done) => {
+//   try {
+//       const userDao = new UserDao(con, "poi_users");
+
+
+//       const details = await userDao.findById(userid);
+
+//       done(null, details);
+//   } catch(e) {
+//       done(e);
+//   }
+// });
+
+// passport.use(new LocalStrategy(async(username, password, done)=> {
+   
+//   const userDao = new UserDao(con, "poi_users");
+//   try {
+     
+//       const userDetails = await userDao.login(username, password);
+
+//      //console.log(userDetails);
+//       if(userDetails === null){
+//           return done(null, false);
+//       } else {
+          
+//           return done(null, userDetails);
+//       }
+//   } catch(e) {
+   
+//       return done(e);
+//   }
+// }));
+
+
+
+// app.post('/login',
+    
+//     passport.authenticate('local'), 
+
+    
+//     (req, res, next) => {
+        
+//         res.json(req.user); 
+//     }
+// );
+
+//****************** */
 
 app.use('/auth', authRouter);
 
@@ -50,8 +113,7 @@ app.use(authMiddleware);
 app.use('/points', pointsRouter);
 app.use('/reviews', reviewsRouter);
 
-// app.use(passport.initialize());
-// app.use(passport.session());
+
 
 
 
