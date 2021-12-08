@@ -3,7 +3,7 @@ const pointDao = require("../dao/point");
 
 class pointsController {
   constructor(con) {
-    this.dao = new pointDao(con, "pointsofinterest");
+    this.dao = new pointDao(con, "pointsofinterest"); 
   }
 
   async findAllPoints(req, res) {
@@ -11,7 +11,7 @@ class pointsController {
       const point = await this.dao.findAllPoints();
 
       if (point == null) {
-        res.status(404).json({ error: "No points of interest found" });
+        res.status(404).json({ message: "No points of interest found" });
       } else {
         res.json(point);
       }
@@ -25,7 +25,7 @@ class pointsController {
       const point = await this.dao.findByRegion(req.params.region);
 
       if (point == null) {
-        res.status(404).json({ error: "No region found with this name" });
+        res.status(404).json({ message: "No region found with this name" });
       } else {
         res.json(point);
       }
@@ -39,7 +39,7 @@ class pointsController {
       const point = await this.dao.recommend(req.params.id);
 
       if (point == null) {
-        res.status(404).json({ error: "Could not update recommendations" });
+        res.status(404).json({ message: "Could not update recommendations" });
       } else {
         res.json(point);
       }
@@ -53,9 +53,11 @@ class pointsController {
       const point = await this.dao.createPoint(req.body);
 
       if (point == null) {
-        res.status(404).json({ error: "Could not create new point of interest" });
+        res.status(404).json({ message: "Could not create new point of interest" });
       } else {
-        res.json(point);
+        point.message = "Point of interest created successfully";
+        //console.log(point);
+        res.status(201).json(point);
       }
     } catch (e) {
       res.status(500).json({ error: e });

@@ -1,3 +1,16 @@
+//Error message display
+function displayMessage(mes){
+    let message = document.getElementById("createMes");
+    message.className = "bg-danger";
+    message.className += " p-3";
+    message.className += " mb-2";
+    message.className += " text-white";
+    message.innerHTML = mes;
+    setTimeout(()=>{
+       message.innerHTML = '';
+       message.className = '';}, 3000);
+}
+
 //Leaflet
 
 var mymap = L.map("map").setView([51.505, -0.09], 3);
@@ -9,7 +22,7 @@ function createPOI(e) {
   let popup = L.popup();
   let latlng = mymap.mouseEventToLatLng(e.originalEvent);
   //console.log(latlng);
-  let form = `<form method="post" onsubmit="submitForm(event, this)">
+  let form = `<form method="post" onsubmit="createForm(event, this)">
     <div class="form-group">
       <label for="name">Please enter name</label>
       <input
@@ -104,6 +117,10 @@ function getByRegion(region) {
   fetch(`http://localhost:3000/points/${region}`)
     .then((response) => response.json())
     .then((json) => {
+      if(json.message){
+        displayMessage(json.message);
+      }
+
       console.log(json);
       let resultsTable = document.getElementById("results");
       resultsTable.innerHTML = "";
@@ -193,7 +210,7 @@ function submitReview(e, form, id) {
   fetch("http://localhost:3000/reviews/create", {
     method: "post",
     headers: { "Content-Type": "application/json" },
-    //credentials: 'include',
+    credentials: 'include',
     body: JSON.stringify({
       review: form.review.value,
       poiid: id
@@ -207,13 +224,13 @@ function submitReview(e, form, id) {
     .catch((error) => error);;
 }
 
-function submitForm(e, form) {
+function createForm(e, form) {
   e.preventDefault();
 
   fetch("http://localhost:3000/points/create", {
     method: "post",
     headers: { "Content-Type": "application/json" },
-    //credentials: 'include',
+    credentials: 'include',
     body: JSON.stringify({
       name: form.name.value,
       type: form.type.value,
@@ -228,12 +245,24 @@ function submitForm(e, form) {
   .then((response) => response.json())
   .then((data) => {
     console.log(data);
-    let message = document.getElementById("createMes");
-    message.className = "bg-danger";
-    message.className += " p-3";
-    message.className += " mb-2";
-    message.className += " text-white";
-    message.innerHTML = data.message;
+    displayMessage(data.message);
   })
     .catch((error) => error);;
+}
+
+function loginForm(e, form){
+  e.preventDefault();
+  
+  fetch('http://localhost:3000/auth/login', {
+    method: 'post',
+    headers: {'Content-Type': 'application/json'},
+    credentials: 'include',
+    //credentials: "same-origin",
+    body: JSON.stringify({username: form.username.value, password: form.password.value})
+  }).then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+    
+  })
+    .catch((error) => error);
 }

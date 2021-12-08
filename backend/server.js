@@ -29,7 +29,7 @@ app.use(expressSession({
     unset: 'destroy', 
     proxy: true, 
     cookie: { 
-        maxAge: 600000, 
+        maxAge: 60000, 
         httpOnly: true
     }
 }));
@@ -109,10 +109,10 @@ app.use(corsMiddleware);
 
 app.use('/auth', authRouter);
 
-app.use(authMiddleware);
+//app.use(authMiddleware);
 
-app.use('/points', pointsRouter);
-app.use('/reviews', reviewsRouter);
+app.use('/points', authMiddleware, pointsRouter);
+app.use('/reviews', authMiddleware, reviewsRouter);
 
 
 
