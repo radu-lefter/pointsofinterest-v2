@@ -14,9 +14,7 @@ authRouter.post('/login', (req, res) => {
             if(results.length == 1) {
             req.session.username = req.body.username;
             console.log(req.session);
-            // req.session.save(()=>{
-                
-            // });
+ 
             return res.json({"message":`Logged in as ${req.session.username}`});
             
             }else{
@@ -26,9 +24,10 @@ authRouter.post('/login', (req, res) => {
     });
 });
 
-authRouter.post('/logout', (req, res) => {
+authRouter.get('/logout', (req, res) => {
     req.session = null;
-    res.json({'success': 1 });
+    res.clearCookie('connect.sid', {domain: 'localhost', path: '/'});
+    res.json({"message": "User successfully logged out" });
 });
 
 

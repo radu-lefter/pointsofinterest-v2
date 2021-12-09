@@ -6,7 +6,7 @@ function authMiddleware(req, res, next) {
             next();
         } else {
             console.log(req.session);
-            res.status(401).json({error: "You're not logged in. Go away!"});
+            res.status(401).json({message: "You need to log in to perform that action!"});
         }
     }
 }

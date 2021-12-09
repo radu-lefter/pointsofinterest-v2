@@ -1,4 +1,4 @@
-const pointDao = require("../dao/point");
+const pointDao = require("../models/point");
 
 
 class pointsController {
@@ -41,6 +41,7 @@ class pointsController {
       if (point == null) {
         res.status(404).json({ message: "Could not update recommendations" });
       } else {
+        point.message = "Recommendation updated successfully";
         res.json(point);
       }
     } catch (e) {
@@ -56,7 +57,6 @@ class pointsController {
         res.status(404).json({ message: "Could not create new point of interest" });
       } else {
         point.message = "Point of interest created successfully";
-        //console.log(point);
         res.status(201).json(point);
       }
     } catch (e) {

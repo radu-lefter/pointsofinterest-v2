@@ -1,4 +1,4 @@
-const reviewDao = require("../dao/review");
+const reviewDao = require("../models/review");
 
 
 class reviewsController {
@@ -40,8 +40,9 @@ class reviewsController {
       const review = await this.dao.createReview(req.body);
 
       if (review == null) {
-        res.status(404).json({ error: "Could not create new review of interest" });
+        res.status(404).json({ error: "Could not create new review" });
       } else {
+        review.message = "Review created successfully";
         res.json(review);
       }
     } catch (e) {

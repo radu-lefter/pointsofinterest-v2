@@ -11,13 +11,14 @@ function displayMessage(mes){
        message.className = '';}, 3000);
 }
 
-//Leaflet
+//Leaflet functionality
 
 var mymap = L.map("map").setView([51.505, -0.09], 3);
-var markers = [];
+//var markers = [];
 var markersLayer = new L.LayerGroup();
 mymap.on("click", createPOI);
 
+//creating new point of interest on the map
 function createPOI(e) {
   let popup = L.popup();
   let latlng = mymap.mouseEventToLatLng(e.originalEvent);
@@ -113,6 +114,8 @@ L.tileLayer(
   }
 ).addTo(mymap);
 
+
+//search by region
 function getByRegion(region) {
   fetch(`http://localhost:3000/points/${region}`)
     .then((response) => response.json())
@@ -167,9 +170,10 @@ function getByRegion(region) {
           fetch(`http://localhost:3000/points/recommend/${item["ID"]}`, {
             method: "PUT",
           })
-            .then((response) => response.text())
-            .then((text) => {
-              //console.log(text);
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              displayMessage(data.message);
             })
             .catch((error) => error);
         });
@@ -179,10 +183,12 @@ function getByRegion(region) {
 
         
         var popup = L.popup().setContent(
-          `<h3>${item["name"]}</h3><br>
+          `<h3>${item["name"]}</h3>
           <p>${item["description"]}</p>
+          <h6>Reviews</h6>
           <p>${review}</p>
           <form method="post" onsubmit="submitReview(event, this, ${item["ID"]})">
+          <h6>Enter a review</h6><br>
           <textarea name="review"></textarea><br>
           <button type="submit" class="btn btn-primary">Add review</button>
           </form>
@@ -199,11 +205,28 @@ function getByRegion(region) {
     .catch((error) => error);
 }
 
+
 document.getElementById("regBtn").addEventListener("click", () => {
   const region = document.getElementById("region").value;
   getByRegion(region);
 });
 
+//loggind out functionality
+document.getElementById("logout").addEventListener("click", () => {
+  fetch(`http://localhost:3000/auth/logout`, {
+            method: "GET",
+            credentials: 'include',
+          })
+            .then((response) => response.json())
+            .then((text) => {
+              console.log(text);
+              displayMessage(text.message);
+            })
+            .catch((error) => error);
+  });
+
+
+//creating review
 function submitReview(e, form, id) {
   e.preventDefault();
 
@@ -219,11 +242,12 @@ function submitReview(e, form, id) {
   .then((response) => response.json())
   .then((data) => {
     console.log(data);
-    
+    displayMessage(data.message);
   })
     .catch((error) => error);;
 }
 
+//creating new point of interest
 function createForm(e, form) {
   e.preventDefault();
 
@@ -250,6 +274,7 @@ function createForm(e, form) {
     .catch((error) => error);;
 }
 
+//logging in functionality
 function loginForm(e, form){
   e.preventDefault();
   
@@ -262,7 +287,7 @@ function loginForm(e, form){
   }).then((response) => response.json())
   .then((data) => {
     console.log(data);
-    
+    displayMessage(data.message);
   })
     .catch((error) => error);
 }
