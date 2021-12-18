@@ -4,6 +4,7 @@ const corsMiddleware = require('./middleware/corsMiddleware');
 const authMiddleware = require('./middleware/authMiddleware');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
+const frontend = process.env.frontend;
 const pointsRouter = require('./routes/points');
 const reviewsRouter = require('./routes/reviews');
 const authRouter = require('./routes/auth');
@@ -30,7 +31,7 @@ app.use(expressSession({
     unset: 'destroy', 
     proxy: true, 
     cookie: { 
-        maxAge: 600000, 
+        maxAge: 60000, 
         httpOnly: true
     }
 }));
@@ -44,11 +45,18 @@ app.use(
 );
 
 //cors 
-let options = { origin: 'http://localhost:5500',
-methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
-credentials: true };
-app.use(cors(options));
-app.use(corsMiddleware);
+
+// let options = { origin: frontend,
+// methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
+// credentials: true };
+// app.use(cors(options));
+
+app.use(cors({
+  origin:true,
+  credentials:true
+}));
+
+//app.use(corsMiddleware);
 
 //**************Passport */
 

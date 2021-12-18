@@ -211,11 +211,12 @@ document.getElementById("regBtn").addEventListener("click", () => {
   getByRegion(region);
 });
 
-//loggind out functionality
+//logging out functionality
 document.getElementById("logout").addEventListener("click", () => {
   fetch(`http://localhost:3000/auth/logout`, {
             method: "GET",
             credentials: 'include',
+            //credentials: "same-origin",
           })
             .then((response) => response.json())
             .then((text) => {
@@ -234,6 +235,7 @@ function submitReview(e, form, id) {
     method: "post",
     headers: { "Content-Type": "application/json" },
     credentials: 'include',
+    //credentials: "same-origin",
     body: JSON.stringify({
       review: form.review.value,
       poiid: id
@@ -255,6 +257,7 @@ function createForm(e, form) {
     method: "post",
     headers: { "Content-Type": "application/json" },
     credentials: 'include',
+    //credentials: "same-origin",
     body: JSON.stringify({
       name: form.name.value,
       type: form.type.value,

@@ -26,6 +26,7 @@ authRouter.post('/login', (req, res) => {
 
 authRouter.get('/logout', (req, res) => {
     req.session = null;
+    //res.cookie('connect.sid', {expires: new Date(0)});
     res.clearCookie('connect.sid', {domain: 'localhost', path: '/'});
     res.json({"message": "User successfully logged out" });
 });
