@@ -11,6 +11,12 @@ function displayMessage(mes){
        message.className = '';}, 3000);
 }
 
+//navbar login button
+const login = document.querySelector('#login');
+if(localStorage.user){
+  login.innerHTML = '<a class="nav-link" id="logout">'+ localStorage.user +' | Logout'+'</a>' ;
+}
+
 //Leaflet functionality
 
 var mymap = L.map("map").setView([51.505, -0.09], 3);
@@ -221,7 +227,10 @@ document.getElementById("logout").addEventListener("click", () => {
             .then((response) => response.json())
             .then((text) => {
               console.log(text);
+              localStorage.removeItem('user');
+              
               displayMessage(text.message);
+              setTimeout(()=>{location.reload()}, 3000);
             })
             .catch((error) => error);
   });
@@ -280,7 +289,8 @@ function createForm(e, form) {
 //logging in functionality
 function loginForm(e, form){
   e.preventDefault();
-  
+ 
+
   fetch('http://localhost:3000/auth/login', {
     method: 'post',
     headers: {'Content-Type': 'application/json'},
@@ -288,9 +298,11 @@ function loginForm(e, form){
     //credentials: "same-origin",
     body: JSON.stringify({username: form.username.value, password: form.password.value})
   }).then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-    displayMessage(data.message);
-  })
+    .then((data) => {
+     console.log(data);
+     localStorage.setItem('user', data.message);
+     displayMessage(data.message);
+     setTimeout(()=>{location.reload()}, 3000);
+    })
     .catch((error) => error);
 }
